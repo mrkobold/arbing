@@ -30,8 +30,8 @@ public final class MatchEngine {
             int unibetCurrent = iUnibet;
             int redSevensCurrent = iRedSevens;
             Event currUnibetEvt, currRedSevensEvt;
-            while ((currUnibetEvt = unibetEvents.get(unibetCurrent)).getDate().equals(groupDate)) {
-                while ((currRedSevensEvt = redSevensEvents.get(redSevensCurrent)).getDate().equals(groupDate)) {
+            while (unibetCurrent < unibetEvents.size() && (currUnibetEvt = unibetEvents.get(unibetCurrent)).getDate().equals(groupDate)) {
+                while (redSevensCurrent < redSevensEvents.size() && (currRedSevensEvt = redSevensEvents.get(redSevensCurrent)).getDate().equals(groupDate)) {
                     if (match(currUnibetEvt, currRedSevensEvt)) {
                         matches.add(new Match(currUnibetEvt, currRedSevensEvt));
                     }

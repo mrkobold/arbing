@@ -1,15 +1,16 @@
 
+import arbing.ArbEngine;
 import lombok.extern.slf4j.Slf4j;
 import matching.Match;
+import matching.MatchEngine;
 import model.Event;
 import scrapers.RedSevensScraper;
 import scrapers.Scraper;
+import scrapers.ScraperUtil;
 import scrapers.UnibetScraper;
 
 import java.util.*;
 
-import static matching.MatchEngine.getMatches;
-import static scrapers.ScraperUtil.scrapeEvents;
 
 @Slf4j
 public class Main {
@@ -18,9 +19,11 @@ public class Main {
 
         List<Scraper> scrapers = Arrays.asList(new UnibetScraper(), new RedSevensScraper());
 
-        Map<String, List<Event>> scrapedEvents = scrapeEvents(scrapers);
+        Map<String, List<Event>> scrapedEvents = ScraperUtil.scrapeEvents(scrapers);
 
-        Set<Match> matches = getMatches(scrapedEvents);
+        Set<Match> matches = MatchEngine.getMatches(scrapedEvents);
+
+        Set<Match> arbs = ArbEngine.getArbs(matches);
     }
 
 
