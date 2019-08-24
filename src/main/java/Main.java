@@ -1,4 +1,3 @@
-
 import arbing.ArbEngine;
 import lombok.extern.slf4j.Slf4j;
 import matching.Match;
@@ -9,8 +8,10 @@ import scrapers.Scraper;
 import scrapers.ScraperUtil;
 import scrapers.UnibetScraper;
 
-import java.util.*;
-
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 public class Main {

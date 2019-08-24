@@ -4,17 +4,23 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import model.Event;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 @Slf4j
 public abstract class Scraper {
+    final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
     @Getter
     private String name;
-    HttpURLConnection connection;
+    private HttpURLConnection connection;
 
     Scraper(String name, String urlString) throws IOException {
         this.name = name;
@@ -23,15 +29,25 @@ public abstract class Scraper {
         connection.setRequestMethod("GET");
     }
 
-    public List<Event> getEvents() {
-        try {
-            List<Event> events = getEventsThrowing();
-            log.debug("{} scraper finished. |events|={}", name, events.size());
-            return events;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    List<Event> getEvents() {
+        List<Event> events = getOptionalEventList().orElse(Collections.emptyList());
+        log.debug("{} scraper finished. |events|={}", name, events.size());
+        return events;
     }
 
-    abstract List<Event> getEventsThrowing() throws Exception;
+    private Optional<List<Event>> getOptionalEventList() {
+        Optional<String> jsonString = getOptionalJsonString();
+        return jsonString.map(this::parseEventsFromJSON);
+    }
+
+    abstract List<Event> parseEventsFromJSON(String jsonString);
+
+    private Optional<String> getOptionalJsonString() {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            return Optional.ofNullable(in.readLine());
+        } catch (Exception e) {
+            log.warn("Couldn't read json string in scraper: {}", name);
+            return Optional.empty();
+        }
+    }
 }
