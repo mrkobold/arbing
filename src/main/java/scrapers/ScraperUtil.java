@@ -9,11 +9,11 @@ import java.util.Map;
 
 @Slf4j
 public final class ScraperUtil {
-    public static Map<String, List<Event>> scrapeEvents(List<Scraper> scrapers) {
+    public static Map<String, List<Event>> scrapeEvents(List<Provider> providers) {
         log.debug("Begin event scraping...");
         Map<String, List<Event>> scrapedEvents = new HashMap<>();
-        for (Scraper scraper : scrapers) {
-            scrapedEvents.put(scraper.getName(), scraper.getEvents());
+        for (Provider provider : providers) {
+            scrapedEvents.put(provider.getName(), provider.getEvents());
         }
         log.debug("Finished event scraping...");
         return scrapedEvents;

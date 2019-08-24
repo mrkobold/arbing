@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public abstract class Scraper {
+public abstract class Provider {
     final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     @Getter
-    private String name;
+    String name;
     private HttpURLConnection connection;
 
-    Scraper(String name, String urlString) throws IOException {
+    Provider(String name, String urlString) throws IOException {
         this.name = name;
         URL url = new URL(urlString);
         connection = (HttpURLConnection) url.openConnection();

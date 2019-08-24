@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class UnibetScraper extends Scraper {
+public class UnibetProvider extends Provider {
     private static final String urlString = "https://eu-offering.kambicdn.org/offering/v2018/sbro/listView/tennis.json?lang=ro_RO&market=RO&client_id=2&channel_id=1&ncid=1565702772391&useCombined=true";
 
-    public UnibetScraper() throws Exception {
+    public UnibetProvider() throws Exception {
         super("unibet", urlString);
     }
 
@@ -47,12 +47,13 @@ public class UnibetScraper extends Scraper {
         }
     }
 
-    private static float getForPlayer(JSONArray betOffersArray, int id) {
+    private float getForPlayer(JSONArray betOffersArray, int id) {
         for (int i = 0; i < betOffersArray.length(); i++) {
-            if (betOffersArray.getJSONObject(i).getJSONObject("criterion").getString("englishLabel").equals("MatchingEvents Odds")) {
+            if (betOffersArray.getJSONObject(i).getJSONObject("criterion").getString("englishLabel").equals("Match Odds")) {
                 return betOffersArray.getJSONObject(i).getJSONArray("outcomes").getJSONObject(id).getInt("odds") / 1000f;
             }
         }
+        log.warn("Provider {} could not parse odds", getName());
         return 0f;
     }
 }
