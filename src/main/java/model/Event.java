@@ -27,4 +27,21 @@ public class Event {
     public String toString() {
         return name + " " + win1 + "/" + win2;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (!(other instanceof Event)) {
+            return false;
+        }
+
+        Event otherEvent = (Event) other;
+        return otherEvent.source.equals(source) &&
+                otherEvent.id.equals(id);
+    }
 }

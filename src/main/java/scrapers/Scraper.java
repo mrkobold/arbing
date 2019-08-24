@@ -29,6 +29,7 @@ public abstract class Scraper {
         connection.setRequestMethod("GET");
     }
 
+    // TODO tennis/football/etc
     List<Event> getEvents() {
         List<Event> events = getOptionalEventList().orElse(Collections.emptyList());
         log.debug("{} scraper finished. |events|={}", name, events.size());

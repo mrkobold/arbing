@@ -1,6 +1,6 @@
 import arbing.ArbEngine;
 import lombok.extern.slf4j.Slf4j;
-import matching.Match;
+import matching.MatchingEvents;
 import matching.MatchEngine;
 import model.Event;
 import scrapers.RedSevensScraper;
@@ -22,9 +22,9 @@ public class Main {
 
         Map<String, List<Event>> scrapedEvents = ScraperUtil.scrapeEvents(scrapers);
 
-        Set<Match> matches = MatchEngine.getMatches(scrapedEvents);
+        Set<MatchingEvents> matchingEvents = MatchEngine.getMatches(scrapedEvents);
 
-        Set<Match> arbs = ArbEngine.getArbs(matches);
+        Set<MatchingEvents> arbs = ArbEngine.getArbs(matchingEvents);
     }
 
 

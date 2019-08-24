@@ -8,9 +8,9 @@ import java.util.*;
 @Slf4j
 public final class MatchEngine {
 
-    public static Set<Match> getMatches(Map<String, List<Event>> events) {
-        log.debug("Searching for matches...");
-        Set<Match> matches = new HashSet<>();
+    public static Set<MatchingEvents> getMatches(Map<String, List<Event>> events) {
+        log.debug("Searching for matchingEvents...");
+        Set<MatchingEvents> matchingEvents = new HashSet<>();
         int iUnibet = 0, iRedSevens = 0;
 
         List<Event> unibetEvents = events.get("unibet");
@@ -33,7 +33,7 @@ public final class MatchEngine {
             while (unibetCurrent < unibetEvents.size() && (currUnibetEvt = unibetEvents.get(unibetCurrent)).getDate().equals(groupDate)) {
                 while (redSevensCurrent < redSevensEvents.size() && (currRedSevensEvt = redSevensEvents.get(redSevensCurrent)).getDate().equals(groupDate)) {
                     if (match(currUnibetEvt, currRedSevensEvt)) {
-                        matches.add(new Match(currUnibetEvt, currRedSevensEvt));
+                        matchingEvents.add(new MatchingEvents(currUnibetEvt, currRedSevensEvt));
                     }
                     redSevensCurrent++;
                 }
@@ -43,8 +43,8 @@ public final class MatchEngine {
             iUnibet = unibetCurrent;
             iRedSevens = redSevensCurrent;
         }
-        log.debug("Match searching done. |matches|={}", matches.size());
-        return matches;
+        log.debug("MatchingEvents searching done. |matchingEvents|={}", matchingEvents.size());
+        return matchingEvents;
     }
 
     private static boolean match(Event e1, Event e2) {

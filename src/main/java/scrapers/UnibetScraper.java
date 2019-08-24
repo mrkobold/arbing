@@ -49,7 +49,7 @@ public class UnibetScraper extends Scraper {
 
     private static float getForPlayer(JSONArray betOffersArray, int id) {
         for (int i = 0; i < betOffersArray.length(); i++) {
-            if (betOffersArray.getJSONObject(i).getJSONObject("criterion").getString("englishLabel").equals("Match Odds")) {
+            if (betOffersArray.getJSONObject(i).getJSONObject("criterion").getString("englishLabel").equals("MatchingEvents Odds")) {
                 return betOffersArray.getJSONObject(i).getJSONArray("outcomes").getJSONObject(id).getInt("odds") / 1000f;
             }
         }
