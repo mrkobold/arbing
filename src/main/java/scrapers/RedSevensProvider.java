@@ -20,7 +20,7 @@ public class RedSevensProvider extends Provider {
     }
 
     @Override
-    List<Event> parseEventsFromJSON(String jsonString) {
+    List<Event> parseEventsFromJSONString(String jsonString) {
         List<Event> eventSet = new ArrayList<>();
         JSONObject jsonObject = new JSONObject(jsonString);
         JSONArray events = jsonObject.getJSONObject("Result").getJSONArray("Items").getJSONObject(0).getJSONArray("Events");

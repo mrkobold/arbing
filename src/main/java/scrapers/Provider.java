@@ -38,10 +38,10 @@ public abstract class Provider {
 
     private Optional<List<Event>> getOptionalEventList() {
         Optional<String> jsonString = getOptionalJsonString();
-        return jsonString.map(this::parseEventsFromJSON);
+        return jsonString.map(this::parseEventsFromJSONString);
     }
 
-    abstract List<Event> parseEventsFromJSON(String jsonString);
+    abstract List<Event> parseEventsFromJSONString(String jsonString);
 
     private Optional<String> getOptionalJsonString() {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {

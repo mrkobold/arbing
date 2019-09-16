@@ -18,25 +18,25 @@ public class UnibetProvider extends Provider {
         super("unibet", urlString);
     }
 
-    List<Event> parseEventsFromJSON(String jsonString) {
-        List<Event> eventSet = new ArrayList<>();
+    List<Event> parseEventsFromJSONString(String jsonString) {
+        List<Event> eventList = new ArrayList<>();
         JSONObject jsonObject = new JSONObject(jsonString);
         JSONArray events = jsonObject.getJSONArray("events");
         for (int i = 0; i < events.length(); i++) {
             Optional<Event> optionalEvent = getEventOptional(events.getJSONObject(i));
-            optionalEvent.ifPresent(eventSet::add);
+            optionalEvent.ifPresent(eventList::add);
         }
-        return eventSet;
+        return eventList;
     }
 
     private Optional<Event> getEventOptional(JSONObject rootEvent) {
         try {
             JSONObject eventObject = rootEvent.getJSONObject("event");
+            String matchName = eventObject.getString("name");
             String homeName = eventObject.getString("homeName");
             String awayName = eventObject.getString("awayName");
-            Date start = DATE_FORMAT.parse(eventObject.getString("start"));
             String id = Integer.toString(eventObject.getInt("id"));
-            String matchName = eventObject.getString("name");
+            Date start = DATE_FORMAT.parse(eventObject.getString("start"));
             float win1 = getForPlayer(rootEvent.getJSONArray("betOffers"), 0);
             float win2 = getForPlayer(rootEvent.getJSONArray("betOffers"), 1);
 

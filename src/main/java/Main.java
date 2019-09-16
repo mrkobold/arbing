@@ -3,10 +3,7 @@ import lombok.extern.slf4j.Slf4j;
 import matching.MatchingEvents;
 import matching.MatchEngine;
 import model.Event;
-import scrapers.RedSevensProvider;
-import scrapers.Provider;
-import scrapers.ScraperUtil;
-import scrapers.UnibetProvider;
+import scrapers.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +15,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         log.debug("Started up...");
 
-        List<Provider> providers = Arrays.asList(new UnibetProvider(), new RedSevensProvider());
+        List<Provider> providers = Arrays.asList(new Smart());
 
         Map<String, List<Event>> scrapedEvents = ScraperUtil.scrapeEvents(providers);
 
