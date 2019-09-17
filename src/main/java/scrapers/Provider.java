@@ -19,7 +19,7 @@ import java.util.Properties;
 public abstract class Provider {
     final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    static ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    private static ClassLoader loader = Thread.currentThread().getContextClassLoader();
     final Properties properties = new Properties();
 
     @Getter
@@ -55,5 +55,9 @@ public abstract class Provider {
             log.warn("Couldn't read json string in scraper: {}", name);
             return Optional.empty();
         }
+    }
+
+    String getProperty(String propertyKey) {
+        return properties.getProperty(propertyKey);
     }
 }

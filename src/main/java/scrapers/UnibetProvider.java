@@ -31,7 +31,7 @@ public class UnibetProvider extends Provider {
 
     private List<Event> getEventList(JsonNode documentRoot) {
         List<Event> eventList = new ArrayList<>();
-        JSONArray eventsArray = getJsonArray(documentRoot, "events.array");
+        JSONArray eventsArray = getJsonArray(documentRoot, getProperty("events.array"));
         for (int i = 0; i < eventsArray.length(); i++) {
             Optional<Event> optionalEvent = getOptionalEvent(JsonNode.from(eventsArray.getJSONObject(i)));
             optionalEvent.map(eventList::add);
@@ -45,8 +45,8 @@ public class UnibetProvider extends Provider {
             String eventId = Integer.toString(getInteger(eventRoot, getProperty("event.id")));
             Date start = DATE_FORMAT.parse(getString(eventRoot, getProperty("event.date")));
 
-            String player1 = getString(eventRoot, "player1.name");
-            String player2 = getString(eventRoot, "player2.name");
+            String player1 = getString(eventRoot, getProperty("player1.name"));
+            String player2 = getString(eventRoot, getProperty("player2.name"));
 
             JsonArrayNode betOffersArrayNode = JsonNode.from(getJsonArray(eventRoot, getProperty("event.betOffers.root")));
             JsonObjectNode oddsRootNode = getUnibetMatchOddsRootNode(betOffersArrayNode);
@@ -61,14 +61,10 @@ public class UnibetProvider extends Provider {
         }
     }
 
-    private String getProperty(String propertyKey) {
-        return properties.getProperty(propertyKey);
-    }
-
     private float getOdds(JsonNode node, int id) {
         id--;
         String pathToMatchOdds = properties.getProperty("event.betOffers.pathToMatchOdds");
-        JsonNode oddsNode = getNodeResolvedProperty(node, pathToMatchOdds.replaceAll("\\?", Integer.toString(id)));
+        JsonNode oddsNode = getNode(node, pathToMatchOdds.replaceAll("\\?", Integer.toString(id)));
         Integer odds = ((JsonIntegerNode) oddsNode).get();
         return odds / 1000f;
     }
@@ -77,7 +73,7 @@ public class UnibetProvider extends Provider {
         JSONArray betOffersArray = betOffersArrayNode.get();
         for (int i = 0; i < betOffersArray.length(); i++) {
             JsonObjectNode node = JsonNode.from(betOffersArray.getJSONObject(i));
-            String oddsType = getString(node, "event.betOffers.pathToMatchOddsCheck");
+            String oddsType = getString(node, getProperty("event.betOffers.pathToMatchOddsCheck"));
             if (oddsType.equals("Match Odds")) {
                 return node;
             }

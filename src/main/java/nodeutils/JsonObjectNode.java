@@ -21,6 +21,10 @@ public class JsonObjectNode implements JsonNode {
                 return new JsonStringNode(object.getString(recipe[1]));
             case "integer":
                 return new JsonIntegerNode(object.getInt(recipe[1]));
+            case "long":
+                return new JsonLongNode(object.getLong(recipe[1]));
+            case "double":
+                return new JsonDoubleNode(object.getDouble(recipe[1]));
             default:
                 return null;
         }

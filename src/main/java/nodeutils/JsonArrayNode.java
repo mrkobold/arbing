@@ -22,6 +22,10 @@ public class JsonArrayNode implements JsonNode {
                 return new JsonStringNode(array.getString(i));
             case "integer":
                 return new JsonIntegerNode(array.getInt(i));
+            case "long":
+                return new JsonLongNode(array.getLong(i));
+            case "double":
+                return new JsonDoubleNode(array.getDouble(i));
             default:
                 return null;
         }
