@@ -2,37 +2,22 @@ package nodeutils;
 
 import org.json.JSONArray;
 
-public class JsonArrayNode implements JsonNode {
+public class JsonArrayNode<T extends JSONArray> implements JsonNode<T> {
 
-    private final JSONArray array;
+    private final T array;
 
-    JsonArrayNode(JSONArray array) {
+    JsonArrayNode(T array) {
         this.array = array;
     }
 
     @Override
     public JsonNode step(String[] recipe) {
         Integer i = Integer.parseInt(recipe[1]);
-        switch (recipe[0]) {
-            case "jsonObject":
-                return new JsonObjectNode(array.getJSONObject(i));
-            case "jsonArray":
-                return new JsonArrayNode(array.getJSONArray(i));
-            case "string":
-                return new JsonStringNode(array.getString(i));
-            case "integer":
-                return new JsonIntegerNode(array.getInt(i));
-            case "long":
-                return new JsonLongNode(array.getLong(i));
-            case "double":
-                return new JsonDoubleNode(array.getDouble(i));
-            default:
-                return null;
-        }
+        return JsonNode.from(array.get(i));
     }
 
     @Override
-    public JSONArray get() {
+    public T get() {
         return array;
     }
 }

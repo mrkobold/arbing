@@ -3,23 +3,23 @@ package nodeutils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public interface JsonNode {
+import static nodeutils.JsonTraversalHelper.uncheckedCast;
+
+public interface JsonNode<T> {
 
     default JsonNode step(String[] recipe) {
         return null;
     }
 
-    Object get();
+    T get();
 
-    static JsonObjectNode from(JSONObject object) {
-        return new JsonObjectNode(object);
-    }
-
-    static JsonArrayNode from(JSONArray array) {
-        return new JsonArrayNode(array);
-    }
-
-    static JsonStringNode from(String string) {
-        return new JsonStringNode(string);
+    static <K> JsonNode<K> from(K object) {
+        if (object instanceof JSONArray) {
+            return uncheckedCast(new JsonArrayNode<>((JSONArray) object));
+        }
+        if (object instanceof JSONObject) {
+            return uncheckedCast(new JsonObjectNode<>((JSONObject) object));
+        }
+        return new JsonPrimitiveNode<>(object);
     }
 }

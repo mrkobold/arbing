@@ -2,10 +2,7 @@ package scrapers;
 
 import lombok.extern.slf4j.Slf4j;
 import model.Event;
-import nodeutils.JsonArrayNode;
-import nodeutils.JsonIntegerNode;
 import nodeutils.JsonNode;
-import nodeutils.JsonObjectNode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static nodeutils.JsonTraversalHelper.*;
+import static nodeutils.JsonTraversalHelper.getContent;
 
 @Slf4j
 public class UnibetProvider extends Provider {
@@ -31,7 +28,7 @@ public class UnibetProvider extends Provider {
 
     private List<Event> getEventList(JsonNode documentRoot) {
         List<Event> eventList = new ArrayList<>();
-        JSONArray eventsArray = getJsonArray(documentRoot, getProperty("events.array"));
+        JSONArray eventsArray = getContent(documentRoot, getProperty("events.array"));
         for (int i = 0; i < eventsArray.length(); i++) {
             Optional<Event> optionalEvent = getOptionalEvent(JsonNode.from(eventsArray.getJSONObject(i)));
             optionalEvent.map(eventList::add);
@@ -41,15 +38,15 @@ public class UnibetProvider extends Provider {
 
     private Optional<Event> getOptionalEvent(JsonNode eventRoot) {
         try {
-            String eventName = getString(eventRoot, getProperty("event.name"));
-            String eventId = Integer.toString(getInteger(eventRoot, getProperty("event.id")));
-            Date start = DATE_FORMAT.parse(getString(eventRoot, getProperty("event.date")));
+            String eventName = getContent(eventRoot, getProperty("event.name"));
+            String eventId = Integer.toString(getContent(eventRoot, getProperty("event.id")));
+            Date start = DATE_FORMAT.parse(getContent(eventRoot, getProperty("event.date")));
 
-            String player1 = getString(eventRoot, getProperty("player1.name"));
-            String player2 = getString(eventRoot, getProperty("player2.name"));
+            String player1 = getContent(eventRoot, getProperty("player1.name"));
+            String player2 = getContent(eventRoot, getProperty("player2.name"));
 
-            JsonArrayNode betOffersArrayNode = JsonNode.from(getJsonArray(eventRoot, getProperty("event.betOffers.root")));
-            JsonObjectNode oddsRootNode = getUnibetMatchOddsRootNode(betOffersArrayNode);
+            JsonNode<JSONArray> betOffersArrayNode = JsonNode.from(getContent(eventRoot, getProperty("event.betOffers.root")));
+            JsonNode<JSONObject> oddsRootNode = getUnibetMatchOddsRootNode(betOffersArrayNode);
 
             float win1 = getOdds(oddsRootNode, 1);
             float win2 = getOdds(oddsRootNode, 2);
@@ -64,16 +61,15 @@ public class UnibetProvider extends Provider {
     private float getOdds(JsonNode node, int id) {
         id--;
         String pathToMatchOdds = properties.getProperty("event.betOffers.pathToMatchOdds");
-        JsonNode oddsNode = getNode(node, pathToMatchOdds.replaceAll("\\?", Integer.toString(id)));
-        Integer odds = ((JsonIntegerNode) oddsNode).get();
+        Integer odds = getContent(node, pathToMatchOdds.replaceAll("\\?", Integer.toString(id)));
         return odds / 1000f;
     }
 
-    private JsonObjectNode getUnibetMatchOddsRootNode(JsonArrayNode betOffersArrayNode) {
+    private JsonNode<JSONObject> getUnibetMatchOddsRootNode(JsonNode<JSONArray> betOffersArrayNode) {
         JSONArray betOffersArray = betOffersArrayNode.get();
         for (int i = 0; i < betOffersArray.length(); i++) {
-            JsonObjectNode node = JsonNode.from(betOffersArray.getJSONObject(i));
-            String oddsType = getString(node, getProperty("event.betOffers.pathToMatchOddsCheck"));
+            JsonNode<JSONObject> node = JsonNode.from(betOffersArray.getJSONObject(i));
+            String oddsType = getContent(node, getProperty("event.betOffers.pathToMatchOddsCheck"));
             if (oddsType.equals("Match Odds")) {
                 return node;
             }

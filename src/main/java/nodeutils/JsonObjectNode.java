@@ -2,36 +2,21 @@ package nodeutils;
 
 import org.json.JSONObject;
 
-public class JsonObjectNode implements JsonNode {
+public class JsonObjectNode<K extends JSONObject> implements JsonNode<K> {
 
-    private final JSONObject object;
+    private final K object;
 
-    JsonObjectNode(JSONObject object) {
+    JsonObjectNode(K object) {
         this.object = object;
     }
 
     @Override
     public JsonNode step(String[] recipe) {
-        switch (recipe[0]) {
-            case "jsonObject":
-                return new JsonObjectNode(object.getJSONObject(recipe[1]));
-            case "jsonArray":
-                return new JsonArrayNode(object.getJSONArray(recipe[1]));
-            case "string":
-                return new JsonStringNode(object.getString(recipe[1]));
-            case "integer":
-                return new JsonIntegerNode(object.getInt(recipe[1]));
-            case "long":
-                return new JsonLongNode(object.getLong(recipe[1]));
-            case "double":
-                return new JsonDoubleNode(object.getDouble(recipe[1]));
-            default:
-                return null;
-        }
+        return JsonNode.from(object.get(recipe[1]));
     }
 
     @Override
-    public JSONObject get() {
+    public K get() {
         return object;
     }
 }
