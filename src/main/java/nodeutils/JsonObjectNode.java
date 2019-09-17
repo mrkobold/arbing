@@ -1,4 +1,4 @@
-package scrapers;
+package nodeutils;
 
 import org.json.JSONObject;
 

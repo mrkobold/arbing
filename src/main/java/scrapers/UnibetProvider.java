@@ -2,6 +2,10 @@ package scrapers;
 
 import lombok.extern.slf4j.Slf4j;
 import model.Event;
+import nodeutils.JsonArrayNode;
+import nodeutils.JsonIntegerNode;
+import nodeutils.JsonNode;
+import nodeutils.JsonObjectNode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,50 +14,74 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static nodeutils.JsonTraversalHelper.*;
+
 @Slf4j
 public class UnibetProvider extends Provider {
-    private static final String urlString = "https://eu-offering.kambicdn.org/offering/v2018/sbro/listView/tennis.json?lang=ro_RO&market=RO&client_id=2&channel_id=1&ncid=1565702772391&useCombined=true";
 
     public UnibetProvider() throws Exception {
-        super("unibet", urlString);
+        super("unibet");
     }
 
+    @Override
     List<Event> parseEventsFromJSONString(String jsonString) {
+        JSONObject documentRootObject = new JSONObject(jsonString);
+        return getEventList(JsonNode.from(documentRootObject));
+    }
+
+    private List<Event> getEventList(JsonNode documentRoot) {
         List<Event> eventList = new ArrayList<>();
-        JSONObject jsonObject = new JSONObject(jsonString);
-        JSONArray events = jsonObject.getJSONArray("events");
-        for (int i = 0; i < events.length(); i++) {
-            Optional<Event> optionalEvent = getEventOptional(events.getJSONObject(i));
-            optionalEvent.ifPresent(eventList::add);
+        JSONArray eventsArray = getJsonArray(documentRoot, "events.array");
+        for (int i = 0; i < eventsArray.length(); i++) {
+            Optional<Event> optionalEvent = getOptionalEvent(JsonNode.from(eventsArray.getJSONObject(i)));
+            optionalEvent.map(eventList::add);
         }
         return eventList;
     }
 
-    private Optional<Event> getEventOptional(JSONObject rootEvent) {
+    private Optional<Event> getOptionalEvent(JsonNode eventRoot) {
         try {
-            JSONObject eventObject = rootEvent.getJSONObject("event");
-            String matchName = eventObject.getString("name");
-            String homeName = eventObject.getString("homeName");
-            String awayName = eventObject.getString("awayName");
-            String id = Integer.toString(eventObject.getInt("id"));
-            Date start = DATE_FORMAT.parse(eventObject.getString("start"));
-            float win1 = getForPlayer(rootEvent.getJSONArray("betOffers"), 0);
-            float win2 = getForPlayer(rootEvent.getJSONArray("betOffers"), 1);
+            String eventName = getString(eventRoot, getProperty("event.name"));
+            String eventId = Integer.toString(getInteger(eventRoot, getProperty("event.id")));
+            Date start = DATE_FORMAT.parse(getString(eventRoot, getProperty("event.date")));
 
-            return Optional.of(new Event(id, getName(), matchName, homeName, awayName, start, win1, win2));
-        } catch (Exception e) {
+            String player1 = getString(eventRoot, "player1.name");
+            String player2 = getString(eventRoot, "player2.name");
+
+            JsonArrayNode betOffersArrayNode = JsonNode.from(getJsonArray(eventRoot, getProperty("event.betOffers.root")));
+            JsonObjectNode oddsRootNode = getUnibetMatchOddsRootNode(betOffersArrayNode);
+
+            float win1 = getOdds(oddsRootNode, 1);
+            float win2 = getOdds(oddsRootNode, 2);
+
+            return Optional.of(new Event(eventId, getName(), eventName, player1, player2, start, win1, win2));
+        } catch (Exception ex) {
             log.warn("couldn't parse an event in scraper: {}", getName());
             return Optional.empty();
         }
     }
 
-    private float getForPlayer(JSONArray betOffersArray, int id) {
+    private String getProperty(String propertyKey) {
+        return properties.getProperty(propertyKey);
+    }
+
+    private float getOdds(JsonNode node, int id) {
+        id--;
+        String pathToMatchOdds = properties.getProperty("event.betOffers.pathToMatchOdds");
+        JsonNode oddsNode = getNodeResolvedProperty(node, pathToMatchOdds.replaceAll("\\?", Integer.toString(id)));
+        Integer odds = ((JsonIntegerNode) oddsNode).get();
+        return odds / 1000f;
+    }
+
+    private JsonObjectNode getUnibetMatchOddsRootNode(JsonArrayNode betOffersArrayNode) {
+        JSONArray betOffersArray = betOffersArrayNode.get();
         for (int i = 0; i < betOffersArray.length(); i++) {
-            if (betOffersArray.getJSONObject(i).getJSONObject("criterion").getString("englishLabel").equals("Match Odds")) {
-                return betOffersArray.getJSONObject(i).getJSONArray("outcomes").getJSONObject(id).getInt("odds") / 1000f;
+            JsonObjectNode node = JsonNode.from(betOffersArray.getJSONObject(i));
+            String oddsType = getString(node, "event.betOffers.pathToMatchOddsCheck");
+            if (oddsType.equals("Match Odds")) {
+                return node;
             }
         }
-        log.warn("Provider {} could not parse odds", getName());
-        return 0f;
+        return null;
     }
 }

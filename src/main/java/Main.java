@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         log.debug("Started up...");
 
-        List<Provider> providers = Arrays.asList(new Smart());
+        List<Provider> providers = Arrays.asList(new UnibetProvider());
 
         Map<String, List<Event>> scrapedEvents = ScraperUtil.scrapeEvents(providers);
 

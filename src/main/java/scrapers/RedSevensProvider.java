@@ -16,7 +16,7 @@ public class RedSevensProvider extends Provider {
     private static final String urlString = "https://sb1capi-altenar.biahosted.com/Sportsbook/GetEvents?timezoneOffset=-180&langId=7&skinName=redsevens&configId=1&culture=ro&countryCode=RO&deviceType=Mobile&sportids=0&categoryids=100153%2C100160%2C100159%2C100447%2C100154%2C100155%2C100478&champids=0&group=AllEvents&period=periodall&withLive=false&outrightsDisplay=none&couponType=0&startDate=2019-08-24T10%3A51%3A00.000Z&endDate=2019-08-31T10%3A51%3A00.000Z";
 
     public RedSevensProvider() throws Exception {
-        super("redSevens", urlString);
+        super("redSevens");
     }
 
     @Override

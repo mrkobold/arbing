@@ -1,9 +1,9 @@
-package scrapers;
+package nodeutils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-interface JsonNode {
+public interface JsonNode {
 
     default JsonNode step(String[] recipe) {
         return null;

@@ -13,23 +13,28 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 @Slf4j
 public abstract class Provider {
     final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
+    static ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    final Properties properties = new Properties();
+
     @Getter
-    String name;
+    private String name;
     private HttpURLConnection connection;
 
-    Provider(String name, String urlString) throws IOException {
+    Provider(String name) throws IOException {
         this.name = name;
-        URL url = new URL(urlString);
+        properties.load(loader.getResourceAsStream(name + "-descriptor.properties"));
+
+        URL url = new URL(properties.getProperty("url"));
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
     }
 
-    // TODO tennis/football/etc
     List<Event> getEvents() {
         List<Event> events = getOptionalEventList().orElse(Collections.emptyList());
         log.debug("{} scraper finished. |events|={}", name, events.size());

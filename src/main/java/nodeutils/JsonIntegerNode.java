@@ -1,4 +1,4 @@
-package scrapers;
+package nodeutils;
 
 public class JsonIntegerNode implements JsonNode {
 

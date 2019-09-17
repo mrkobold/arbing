@@ -1,4 +1,4 @@
-package scrapers;
+package nodeutils;
 
 public class JsonStringNode implements JsonNode {
 
