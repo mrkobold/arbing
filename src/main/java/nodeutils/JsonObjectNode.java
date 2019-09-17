@@ -11,8 +11,8 @@ public class JsonObjectNode<K extends JSONObject> implements JsonNode<K> {
     }
 
     @Override
-    public JsonNode step(String[] recipe) {
-        return JsonNode.from(object.get(recipe[1]));
+    public JsonNode step(String step) {
+        return JsonNode.from(object.get(step));
     }
 
     @Override

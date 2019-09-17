@@ -7,9 +7,7 @@ import static nodeutils.JsonTraversalHelper.uncheckedCast;
 
 public interface JsonNode<T> {
 
-    default JsonNode step(String[] recipe) {
-        return null;
-    }
+    JsonNode step(String step);
 
     T get();
 

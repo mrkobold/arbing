@@ -6,7 +6,7 @@ public final class JsonTraversalHelper {
         String[] steps = path.split("\\|");
         JsonNode currentNode = rootNode;
         for (String step : steps) {
-            currentNode = currentNode.step(step.split(":"));
+            currentNode = currentNode.step(step);
         }
         return uncheckedCast(currentNode);
     }

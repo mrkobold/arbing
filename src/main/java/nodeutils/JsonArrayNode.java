@@ -11,8 +11,8 @@ public class JsonArrayNode<T extends JSONArray> implements JsonNode<T> {
     }
 
     @Override
-    public JsonNode step(String[] recipe) {
-        Integer i = Integer.parseInt(recipe[1]);
+    public JsonNode step(String step) {
+        Integer i = Integer.parseInt(step);
         return JsonNode.from(array.get(i));
     }
 

@@ -43,20 +43,20 @@ public class RedSevensProvider extends Provider {
             String eventId = Long.toString(getContent(eventRoot, getProperty("event.id")));
             Date start = DATE_FORMAT.parse(getContent(eventRoot, getProperty("event.date")));
 
-            JsonNode<JSONArray> competitors = JsonNode.from(getContent(eventRoot, "jsonArray:Competitors"));
+            JsonNode<JSONArray> competitors = JsonNode.from(getContent(eventRoot, "Competitors"));
             String player1 = getContent(competitors, getProperty("player1.name"));
             String player2 = getContent(competitors, getProperty("player2.name"));
 
-            JsonNode<JSONArray> oddsNode = JsonNode.from(getContent(getOddsNode(eventRoot), "jsonArray:Items"));
+            JsonNode<JSONArray> oddsNode = JsonNode.from(getContent(getOddsNode(eventRoot), "Items"));
             Double win1;
             Double win2;
 
-            if (getContent(oddsNode, "jsonObject:0|string:Name").equals("1")) {
-                win1 = getContent(oddsNode, "jsonObject:0|double:Price");
-                win2 = getContent(oddsNode, "jsonObject:1|double:Price");
+            if (getContent(oddsNode, "0|Name").equals("1")) {
+                win1 = getContent(oddsNode, "0|Price");
+                win2 = getContent(oddsNode, "1|Price");
             } else {
-                win1 = getContent(oddsNode, "jsonObject:1|double:Price");
-                win2 = getContent(oddsNode, "jsonObject:0|double:Price");
+                win1 = getContent(oddsNode, "1|Price");
+                win2 = getContent(oddsNode, "0|Price");
             }
 
             return Optional.of(new Event(eventId, getName(), eventName, player1, player2, start, win1.floatValue(), win2.floatValue()));
@@ -67,10 +67,10 @@ public class RedSevensProvider extends Provider {
     }
 
     private JsonNode<JSONObject> getOddsNode(JsonNode eventRoot) {
-        JSONArray oddsTypesArray = getContent(eventRoot, "jsonArray:Items");
+        JSONArray oddsTypesArray = getContent(eventRoot, "Items");
         for (int i = 0; i < oddsTypesArray.length(); i++) {
             JsonNode<JSONObject> oddsNode = JsonNode.from(oddsTypesArray.getJSONObject(i));
-            String content = getContent(oddsNode, "string:Name");
+            String content = getContent(oddsNode, "Name");
             if (content.contains("tig")) {
                 return oddsNode;
             }

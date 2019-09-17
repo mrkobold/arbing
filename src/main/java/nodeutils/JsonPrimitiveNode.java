@@ -9,6 +9,11 @@ public class JsonPrimitiveNode<P> implements JsonNode<P> {
     }
 
     @Override
+    public JsonNode step(String step) {
+        throw new RuntimeException("Reached leaf. No more steps");
+    }
+
+    @Override
     public P get() {
         return value;
     }
