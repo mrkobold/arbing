@@ -6,7 +6,12 @@ public final class JsonTraversalHelper {
         String[] steps = path.split("\\|");
         JsonNode currentNode = rootNode;
         for (String step : steps) {
-            currentNode = currentNode.step(step);
+            try {
+                int index = Integer.parseInt(step);
+                currentNode = currentNode.step(index);
+            } catch (NumberFormatException ex) {
+                currentNode = currentNode.step(step);
+            }
         }
         return uncheckedCast(currentNode);
     }
@@ -17,7 +22,7 @@ public final class JsonTraversalHelper {
     }
 
     @SuppressWarnings("unchecked")
-    static <T> T uncheckedCast(Object o) {
+    private static <T> T uncheckedCast(Object o) {
         return (T) o;
     }
 }

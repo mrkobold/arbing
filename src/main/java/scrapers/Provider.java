@@ -3,6 +3,8 @@ package scrapers;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import model.Event;
+import nodeutils.JsonNode;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,7 +48,12 @@ public abstract class Provider {
         return jsonString.map(this::parseEventsFromJSONString);
     }
 
-    abstract List<Event> parseEventsFromJSONString(String jsonString);
+    private List<Event> parseEventsFromJSONString(String jsonString) {
+        JSONObject documentRootObject = new JSONObject(jsonString);
+        return getEventList(new JsonNode<>(documentRootObject));
+    }
+
+    abstract List<Event> getEventList(JsonNode documentRoot);
 
     private Optional<String> getOptionalJsonString() {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
