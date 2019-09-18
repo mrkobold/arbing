@@ -26,7 +26,7 @@ public class UnibetProvider extends Provider {
         return getEventList(JsonNode.from(documentRootObject));
     }
 
-    private List<Event> getEventList(JsonNode documentRoot) {
+    private List<Event> getEventList(JsonNode<JSONObject> documentRoot) {
         List<Event> eventList = new ArrayList<>();
         JSONArray eventsArray = getContent(documentRoot, getProperty("events.array"));
         for (int i = 0; i < eventsArray.length(); i++) {
@@ -38,8 +38,6 @@ public class UnibetProvider extends Provider {
 
     private Optional<Event> getOptionalEvent(JsonNode eventRoot) {
         try {
-            String eventName = getContent(eventRoot, getProperty("event.name"));
-            String eventId = Integer.toString(getContent(eventRoot, getProperty("event.id")));
             Date start = DATE_FORMAT.parse(getContent(eventRoot, getProperty("event.date")));
 
             String player1 = getContent(eventRoot, getProperty("player1.name"));
@@ -51,7 +49,7 @@ public class UnibetProvider extends Provider {
             float win1 = getOdds(oddsRootNode, 1);
             float win2 = getOdds(oddsRootNode, 2);
 
-            return Optional.of(new Event(eventId, getName(), eventName, player1, player2, start, win1, win2));
+            return Optional.of(new Event(getName(), player1, player2, start, win1, win2));
         } catch (Exception ex) {
             log.warn("couldn't parse an event in scraper: {}", getName());
             return Optional.empty();

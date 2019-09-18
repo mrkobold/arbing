@@ -7,12 +7,9 @@ import java.util.Date;
 
 @AllArgsConstructor
 public class Event {
-    @Getter
-    private final String id;
+
     @Getter
     private final String source;
-    @Getter
-    private final String name;
     @Getter
     private final String player1;
     @Getter
@@ -25,7 +22,7 @@ public class Event {
     private final float win2;
 
     public String toString() {
-        return name + " " + win1 + "/" + win2;
+        return player1 + " " + player2 + " " + win1 + "/" + win2;
     }
 
     @Override
@@ -42,6 +39,8 @@ public class Event {
 
         Event otherEvent = (Event) other;
         return otherEvent.source.equals(source) &&
-                otherEvent.id.equals(id);
+                otherEvent.player1.equals(player1) &&
+                otherEvent.player2.equals(player2) &&
+                otherEvent.date.equals(date);
     }
 }

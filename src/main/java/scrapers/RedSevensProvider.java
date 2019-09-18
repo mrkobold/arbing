@@ -2,7 +2,6 @@ package scrapers;
 
 import lombok.extern.slf4j.Slf4j;
 import model.Event;
-import nodeutils.JsonArrayNode;
 import nodeutils.JsonNode;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,8 +38,6 @@ public class RedSevensProvider extends Provider {
 
     private Optional<Event> getOptionalEvent(JsonNode eventRoot) {
         try {
-            String eventName = getContent(eventRoot, getProperty("event.name"));
-            String eventId = Long.toString(getContent(eventRoot, getProperty("event.id")));
             Date start = DATE_FORMAT.parse(getContent(eventRoot, getProperty("event.date")));
 
             JsonNode<JSONArray> competitors = JsonNode.from(getContent(eventRoot, "Competitors"));
@@ -59,7 +56,7 @@ public class RedSevensProvider extends Provider {
                 win2 = getContent(oddsNode, "0|Price");
             }
 
-            return Optional.of(new Event(eventId, getName(), eventName, player1, player2, start, win1.floatValue(), win2.floatValue()));
+            return Optional.of(new Event(getName(), player1, player2, start, win1.floatValue(), win2.floatValue()));
         } catch (Exception e) {
             log.warn("couldn't parse an event in scraper: {}", getName());
             return Optional.empty();

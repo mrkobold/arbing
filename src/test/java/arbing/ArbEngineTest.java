@@ -14,8 +14,8 @@ public class ArbEngineTest {
 
     @Test
     public void testGetArbs() {
-        Event e1 = new Event("1", "a", "a", "a", "a", new Date(), 2.4f, 1.1f);
-        Event e2 = new Event("1", "a", "a", "a", "a", new Date(), 1.1f, 3f);
+        Event e1 = new Event("a", "a", "a", new Date(), 2.4f, 1.1f);
+        Event e2 = new Event("a", "a", "a", new Date(), 1.1f, 3f);
 
         MatchingEvents matchingEvents = new MatchingEvents(e1, e2);
 
