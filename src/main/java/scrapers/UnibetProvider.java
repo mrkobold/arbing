@@ -6,9 +6,7 @@ import nodeutils.JsonNode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 import static nodeutils.JsonTraversalHelper.getContent;
@@ -21,17 +19,7 @@ public class UnibetProvider extends Provider {
     }
 
     @Override
-    List<Event> getEventList(JsonNode documentRoot) {
-        List<Event> eventList = new ArrayList<>();
-        JSONArray eventsArray = getContent(documentRoot, getProperty("events.array"));
-        for (int i = 0; i < eventsArray.length(); i++) {
-            Optional<Event> optionalEvent = getOptionalEvent(new JsonNode<>(eventsArray.getJSONObject(i)));
-            optionalEvent.map(eventList::add);
-        }
-        return eventList;
-    }
-
-    private Optional<Event> getOptionalEvent(JsonNode<JSONObject> eventRoot) {
+    Optional<Event> getOptionalEvent(JsonNode<JSONObject> eventRoot) {
         try {
             Date start = DATE_FORMAT.parse(getContent(eventRoot, getProperty("event.date")));
 

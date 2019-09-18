@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import model.Event;
 import nodeutils.JsonNode;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -12,10 +13,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
+
+import static nodeutils.JsonTraversalHelper.getContent;
 
 @Slf4j
 public abstract class Provider {
@@ -49,11 +49,20 @@ public abstract class Provider {
     }
 
     private List<Event> parseEventsFromJSONString(String jsonString) {
-        JSONObject documentRootObject = new JSONObject(jsonString);
-        return getEventList(new JsonNode<>(documentRootObject));
+        return getEventList(JsonNode.from(jsonString));
     }
 
-    abstract List<Event> getEventList(JsonNode documentRoot);
+    private List<Event> getEventList(JsonNode documentRoot) {
+        List<Event> eventList = new ArrayList<>();
+        JSONArray eventsArray = getContent(documentRoot, getProperty("events.array"));
+        for (int i = 0; i < eventsArray.length(); i++) {
+            Optional<Event> optionalEvent = getOptionalEvent(new JsonNode<>(eventsArray.getJSONObject(i)));
+            optionalEvent.map(eventList::add);
+        }
+        return eventList;
+    }
+
+    abstract Optional<Event> getOptionalEvent(JsonNode<JSONObject> eventRoot);
 
     private Optional<String> getOptionalJsonString() {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {

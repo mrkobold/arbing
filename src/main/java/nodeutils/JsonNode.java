@@ -11,6 +11,13 @@ public class JsonNode<T> {
         this.content = content;
     }
 
+    public static JsonNode from(String jsonString) {
+        if (jsonString.startsWith("[")) {
+            return new JsonNode<>(new JSONArray(jsonString));
+        }
+        return new JsonNode<>(new JSONObject(jsonString));
+    }
+
     JsonNode step(String key) {
         return new JsonNode<>(((JSONObject) content).get(key));
     }
