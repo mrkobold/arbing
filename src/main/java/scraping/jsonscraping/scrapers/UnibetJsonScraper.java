@@ -1,20 +1,20 @@
-package scrapers;
+package scraping.jsonscraping.scrapers;
 
 import lombok.extern.slf4j.Slf4j;
 import model.Event;
-import nodeutils.JsonNode;
+import scraping.jsonscraping.nodeutils.JsonNode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.Optional;
 
-import static nodeutils.JsonTraversalHelper.getContent;
+import static scraping.jsonscraping.nodeutils.JsonTraversalHelper.getContent;
 
 @Slf4j
-public class UnibetProvider extends Provider {
+public class UnibetJsonScraper extends JsonScraper {
 
-    public UnibetProvider() throws Exception {
+    public UnibetJsonScraper() throws Exception {
         super("unibet");
     }
 

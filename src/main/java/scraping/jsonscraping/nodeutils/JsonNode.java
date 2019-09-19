@@ -1,4 +1,4 @@
-package nodeutils;
+package scraping.jsonscraping.nodeutils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

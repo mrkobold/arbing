@@ -1,4 +1,4 @@
-package nodeutils;
+package scraping.jsonscraping.nodeutils;
 
 public final class JsonTraversalHelper {
 

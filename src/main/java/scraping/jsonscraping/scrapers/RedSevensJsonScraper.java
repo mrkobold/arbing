@@ -1,20 +1,20 @@
-package scrapers;
+package scraping.jsonscraping.scrapers;
 
 import lombok.extern.slf4j.Slf4j;
 import model.Event;
-import nodeutils.JsonNode;
+import scraping.jsonscraping.nodeutils.JsonNode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.Optional;
 
-import static nodeutils.JsonTraversalHelper.getContent;
+import static scraping.jsonscraping.nodeutils.JsonTraversalHelper.getContent;
 
 @Slf4j
-public class RedSevensProvider extends Provider {
+public class RedSevensJsonScraper extends JsonScraper {
 
-    public RedSevensProvider() throws Exception {
+    public RedSevensJsonScraper() throws Exception {
         super("redSevens");
     }
 

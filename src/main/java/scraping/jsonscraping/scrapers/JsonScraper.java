@@ -1,11 +1,12 @@
-package scrapers;
+package scraping.jsonscraping.scrapers;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import model.Event;
-import nodeutils.JsonNode;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import scraping.Scraper;
+import scraping.jsonscraping.nodeutils.JsonNode;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,10 +16,10 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static nodeutils.JsonTraversalHelper.getContent;
+import static scraping.jsonscraping.nodeutils.JsonTraversalHelper.getContent;
 
 @Slf4j
-public abstract class Provider {
+public abstract class JsonScraper implements Scraper {
     final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     private static ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -28,16 +29,17 @@ public abstract class Provider {
     private String name;
     private HttpURLConnection connection;
 
-    Provider(String name) throws IOException {
+    JsonScraper(String name) throws IOException {
         this.name = name;
-        properties.load(loader.getResourceAsStream(name + "-descriptor.properties"));
+        properties.load(loader.getResourceAsStream(name + "-jsonscraper.properties"));
 
         URL url = new URL(properties.getProperty("url"));
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
     }
 
-    List<Event> getEvents() {
+    @Override
+    public List<Event> getEvents() {
         List<Event> events = getOptionalEventList().orElse(Collections.emptyList());
         log.debug("{} scraper finished. |events|={}", name, events.size());
         return events;

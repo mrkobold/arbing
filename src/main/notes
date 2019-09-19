@@ -1,7 +1,7 @@
-Working scrapers: Unibet, RedSevens,
+Working scraping.jsonscraping.jsonScrapers: Unibet, RedSevens,
 
 stanleybet & unibet: same url for tennis games
-https://eu-offering.kambicdn.org/offering/v2018/sbro/listView/tennis.json?lang=ro_RO&market=RO&client_id=2&channel_id=1&ncid=1565702772391&useCombined=true
+https://eu-offering.kambicdn.org/offering/v2018/sbro/listView/tennis.scraping.jsonscraping?lang=ro_RO&market=RO&client_id=2&channel_id=1&ncid=1565702772391&useCombined=true
 
 red sevens & 888: same url for tennis games
 
