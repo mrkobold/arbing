@@ -43,4 +43,14 @@ public class Event {
                 otherEvent.player2.equals(player2) &&
                 otherEvent.date.equals(date);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash = hash * 31 + source.hashCode();
+        hash = hash * 31 + player1.hashCode();
+        hash = hash * 31 + player2.hashCode();
+        hash = hash * 31 + date.hashCode();
+        return hash;
+    }
 }
