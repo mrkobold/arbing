@@ -5,6 +5,7 @@ import matching.MatchingEvents;
 import model.Event;
 import scraping.Scraper;
 import scraping.ScraperUtil;
+import scraping.htmlscraping.NetbetScraper;
 import scraping.jsonscraping.scrapers.*;
 
 import java.util.Arrays;
@@ -19,7 +20,8 @@ public class Main {
 
         List<Scraper> jsonScrapers = Arrays.asList(
                 new UnibetJsonScraper(),
-                new RedSevensJsonScraper()
+                new RedSevensJsonScraper(),
+                new NetbetScraper()
         );
 
         Map<String, List<Event>> scrapedEvents = ScraperUtil.scrapeEvents(jsonScrapers);

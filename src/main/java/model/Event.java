@@ -22,7 +22,8 @@ public class Event {
     private final float win2;
 
     public String toString() {
-        return player1 + " " + player2 + " " + win1 + "/" + win2;
+        return source;
+//        return player1 + " " + player2 + " " + win1 + "/" + win2;
     }
 
     @Override

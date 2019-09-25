@@ -24,6 +24,7 @@ public abstract class JsonScraper implements Scraper {
 
     private static ClassLoader loader = Thread.currentThread().getContextClassLoader();
     final Properties properties = new Properties();
+    protected Date date = new Date();
 
     @Getter
     private String name;
@@ -59,7 +60,9 @@ public abstract class JsonScraper implements Scraper {
         JSONArray eventsArray = getContent(documentRoot, getProperty("events.array"));
         for (int i = 0; i < eventsArray.length(); i++) {
             Optional<Event> optionalEvent = getOptionalEvent(new JsonNode<>(eventsArray.getJSONObject(i)));
-            optionalEvent.map(eventList::add);
+            if (optionalEvent.map(Event::getDate).map(d -> d.after(date)).orElse(false)) {
+                optionalEvent.map(eventList::add);
+            }
         }
         return eventList;
     }
